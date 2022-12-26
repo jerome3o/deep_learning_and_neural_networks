@@ -16,9 +16,16 @@ class Perceptron:
         self.w = w if w is not None else np.random.normal(size=dimensions)
         self.b = b or 0
 
+    def predict(self, x: np.array) -> np.array:
+        return np.sign(x @ self.w + self.b)
+
     def calculate_least_squared_loss(self, x: np.array, y: np.array) -> float:
-        y_pred = np.sign(x @ self.w + self.b)
+        y_pred = self.predict(x)
         return sum((y - y_pred) ** 2)
+
+    def calculate_smooth_loss(self, x: np.array, y: np.array) -> float:
+        y_pred = self.predict(x)
+        return sum((y - y_pred) @ x)
 
 
 def _debug_plot(X, y):
@@ -77,6 +84,9 @@ def main():
 
     print(random_perceptron.calculate_least_squared_loss(x, y))
     print(perfect_perceptron.calculate_least_squared_loss(x, y))
+
+    print(random_perceptron.calculate_smooth_loss(x, y))
+    print(perfect_perceptron.calculate_smooth_loss(x, y))
 
 
 if __name__ == "__main__":
